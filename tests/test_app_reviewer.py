@@ -48,3 +48,15 @@ def test_reviewer_partial_requires_reason(ran):
     at.button(key="btn_partial").click().run()
     assert first in set(load_queue().request_id)          # nothing recorded without a reason
     assert any("reason" in str(e.value).lower() for e in list(at.error) + list(at.warning))
+
+
+def test_reviewer_escapes_dollar_signs_in_markdown(ran):
+    """Streamlit markdown treats $...$ as LaTeX; a reason with two amounts rendered as math."""
+    at = AppTest.from_file(str(ROOT / "app" / "pages" / "1_Reviewer_Queue.py"), default_timeout=30).run()
+    queue = load_queue()
+    over_cap = queue[queue.rule_id == "over_cap"].request_id.iloc[0]
+    at.selectbox(key="selected_request").set_value(over_cap).run()
+    assert not at.exception
+    why = next(m.value for m in at.markdown if m.value.startswith("**Why it is here:**"))
+    assert "\\$200" in why and "\\$150" in why
+    assert "$2" not in why.replace("\\$", "")
