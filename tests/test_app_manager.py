@@ -46,7 +46,8 @@ def test_form_add_route_rule_dry_run_and_publish(with_v1):
     assert not at.exception
     at.button(key="btn_dry_run").click().run()
     assert not at.exception
-    assert any("flip" in str(m.value).lower() for m in list(at.markdown) + list(at.metric) + list(at.caption))
+    assert any("decided differently" in str(m.value) for m in at.markdown)
+    assert not at.metric                                                # no tiles repeating the sentence
     at.button(key="btn_publish").click().run()
     assert not at.exception
     assert list_versions() == [1, 2]
@@ -75,6 +76,11 @@ def test_fail_verdict_requires_publish_anyway(with_v1):
     at.button(key="btn_dry_run").click().run()
     assert not at.exception
     assert any("RF-1006" in str(m.value) for m in list(at.markdown) + list(at.dataframe) + list(at.error))
+    changed = [df.value for df in at.dataframe if "old_rule" in df.value.columns]
+    assert len(changed) == 2, "history and pending tables of requests that would change"
+    assert "bad" in changed[0].columns                                  # history: outcomes are known
+    assert "bad" not in changed[1].columns and "bad_reason" not in changed[1].columns   # pending: no outcome yet
+    assert any("no outcome yet" in str(c.value) for c in at.caption)
     assert at.button(key="btn_publish").disabled or any("anyway" in str(b.label).lower() for b in at.button)
     assert list_versions() == [1]
 
