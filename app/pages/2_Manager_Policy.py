@@ -270,16 +270,12 @@ if st.button("Dry run", key="btn_dry_run", disabled=not net_notes):
 
 if ss.get("dry_run"):
     dr, verdict = ss["dry_run"], ss["verdict"]
-    sections = (("Past 3 months (248 requests)", dr["history"], True),
-                (f"Pending file ({len(pending_df())} requests waiting now)", dr["pending"], False))
-    for title, d, has_outcomes in sections:
-        st.markdown(f"**{title}**: {d.n_flipped} request(s) would be decided differently.")
+    for title, d in (("Past 3 months (248 requests)", dr["history"]), ("Pending file", dr["pending"])):
+        st.markdown(f"**{title}**: {d.n_flipped} request(s) would flip.")
         m1, m2, m3 = st.columns(3)
         m1.metric("to automatic", len(d.to_auto), money(d.dollars_to_auto))
         m2.metric("to a person", len(d.to_human), money(d.dollars_to_human))
-        m3.metric("changed", d.n_flipped)
-        if not has_outcomes:
-            st.caption("Pending requests have no outcome yet, so there is nothing to judge here; this only shows what the proposal would decide.")
+        m3.metric("flipped", d.n_flipped)
         if d.newly_bad_detectable:
             st.error("RED, blocks publishing: the proposal would newly approve past cases that went bad and could have been caught: "
                      + ", ".join(d.newly_bad_detectable))
@@ -288,13 +284,10 @@ if ss.get("dry_run"):
         if d.newly_caught_detectable or d.newly_caught_undetectable:
             st.success("GREEN: past bad cases the proposal would now send to a person: " + ", ".join(d.newly_caught_detectable + d.newly_caught_undetectable))
         if d.per_request:
-            with st.expander(f"Requests that would change ({d.n_flipped})"):
-                table = pd.DataFrame(d.per_request)
-                if not has_outcomes:
-                    table = table.drop(columns=["bad", "bad_reason"])
-                st.dataframe(table, hide_index=True, width="stretch")
+            with st.expander(f"Flipped requests ({d.n_flipped})"):
+                st.dataframe(pd.DataFrame(d.per_request), hide_index=True, width="stretch")
     if dr["history"].n_flipped == 0 and dr["pending"].n_flipped == 0:
-        st.info("Nothing would change. If you added an approve rule meant to override a guard (for example 'stolen-card cases go straight "
+        st.info("Nothing flips. If you added an approve rule meant to override a guard (for example 'stolen-card cases go straight "
                 "through' must beat the fraud-flag rule), it sits at the bottom by default: set its Position to top and add it again.")
     st.markdown(f"**Backtest verdict for the proposal: {verdict.verdict}** — "
                 f"{verdict.n_auto_approve} auto-approved ({verdict.auto_approve_rate:.0%}), {money(verdict.dollars_auto_approved)}, "
