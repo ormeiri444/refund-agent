@@ -1,0 +1,206 @@
+request_id,customer_note,support_note,damage_photo_confirmed,carrier_proof_of_delivery,carrier_investigation_open,card_confirmed_stolen,our_error_confirmed,ambiguous
+RF-2003,,photo attached looks genuine,T,U,U,U,U,False
+RF-2004,bought two by mistake,,U,U,U,U,U,False
+RF-1001,ordered medium got small,,U,U,U,U,U,False
+RF-2002,mug chipped on the rim,photos clear,T,U,U,U,U,False
+RF-2008,,photo attached looks genuine,T,U,U,U,U,False
+RF-1003,,within window,U,U,U,U,U,False
+RF-1004,screen has a line,No photo - customer says she already threw the box and the unit away.,F,U,U,U,U,False
+RF-2007,,Unauthorised purchase per cardholder - bank fraud case opened.,U,U,U,T,U,False
+RF-1002,handle snapped off,photo attached looks genuine,T,U,U,U,U,False
+RF-2001,hole in the sleeve,photos clear,T,U,U,U,U,False
+RF-2006,"needed it for a trip, came after",carrier delay confirmed,U,U,U,U,U,False
+RF-1005,nothing delivered,Carrier POD shows it signed for at 11:02 by 'M. Katz'. Customer says nobody by that name lives there.,U,T,U,U,U,False
+RF-2011,mug chipped on the rim,photos clear,T,U,U,U,U,False
+RF-2016,,within window,U,U,U,U,U,False
+RF-2013,hole in the sleeve,photos clear,T,U,U,U,U,False
+RF-2012,"changed my mind, sorry",,U,U,U,U,U,False
+RF-2014,colour looks different in person,,U,U,U,U,U,False
+RF-1006,sent blue not grey,matches order line - customer may be mistaken,U,U,U,U,F,False
+RF-2015,still nothing after 2 weeks,"Tracking stops at the regional depot, carrier has opened a trace.",U,U,T,U,U,False
+RF-2010,ordered L got M,,U,U,U,U,U,False
+RF-2019,,Card reported stolen. Order not recognised by the account holder.,U,U,U,T,U,False
+RF-2020,,"Delivered to parcel locker, customer collected it per locker log.",U,T,U,U,U,False
+RF-2024,too tight across the shoulders,,U,U,U,U,U,False
+RF-1008,cracked corner,photos clear,T,U,U,U,U,False
+RF-2018,,carrier delay confirmed,U,U,U,U,U,True
+RF-2017,,new account - address mismatch,U,U,U,U,U,False
+RF-2009,hole in the sleeve,photos clear,T,U,U,U,U,False
+RF-1007,cracked on arrival,photos clear,T,U,U,U,U,False
+RF-2021,lid cracked,,U,U,U,U,U,False
+RF-2022,,photos clear,T,U,U,U,U,False
+RF-2028,,carrier delay confirmed,U,U,U,U,U,True
+RF-2027,zip broken out of the bag,,U,U,U,U,U,False
+RF-2030,"gift, they didn't like it",,U,U,U,U,U,False
+RF-2026,,tracking inconclusive - last scan 10 days ago,U,U,T,U,U,False
+RF-2029,,photo attached looks genuine,T,U,U,U,U,False
+RF-2033,,carrier delay confirmed,U,U,U,U,U,True
+RF-2034,found it cheaper,outside 14 day window - opened and used,U,U,U,U,U,False
+RF-1010,arrived two weeks late,carrier delay confirmed,U,U,U,U,U,False
+RF-2035,too tight across the shoulders,,U,U,U,U,U,False
+RF-2036,screen won't turn on out of the box,"Photos clear - crack runs from the corner, box crushed on the same side.",T,U,U,U,U,False
+RF-2037,zip broken out of the bag,,U,U,U,U,U,False
+RF-2038,not really my style,,U,U,U,U,U,False
+RF-1013,seam torn,,U,U,U,U,U,False
+RF-2031,lamp base snapped,photo attached looks genuine,T,U,U,U,U,False
+RF-2040,took 3 weeks,carrier delay confirmed,U,U,U,U,U,False
+RF-2039,need a size up,,U,U,U,U,U,False
+RF-1012,not what I ordered,"Asked what was wrong with it - customer couldn't say, just repeated 'not what I ordered'.",U,U,U,U,U,False
+RF-1011,,tracking stops at depot,U,U,T,U,U,False
+RF-1014,no package,"Brand-new account, shipping address doesn't match the billing address on the card.",U,U,U,U,U,False
+RF-2043,not really my style,,U,U,U,U,U,False
+RF-2044,,within window,U,U,U,U,U,False
+RF-1016,never showed up,tracking inconclusive,U,U,U,U,U,True
+RF-2046,zip broken out of the bag,,U,U,U,U,U,False
+RF-2045,took 3 weeks,carrier delay confirmed,U,U,U,U,U,False
+RF-2041,,confirmed picking error,U,U,U,U,T,False
+RF-2048,,tracking stops at depot,U,U,T,U,U,False
+RF-2042,nothing came,Tracking shows delivered and signed; customer says the signature isn't hers.,U,T,U,U,U,False
+RF-2051,"gift, they didn't like it",,U,U,U,U,U,False
+RF-2053,,confirmed picking error,U,U,U,U,T,False
+RF-2049,wrong size rug,"Warehouse confirms mis-pick, same SKU family.",U,U,U,U,T,False
+RF-2052,,"Signed for at the door, carrier photo shows the parcel on the step.",U,T,U,U,U,False
+RF-1017,did not arrive,tracking inconclusive,U,U,U,U,U,True
+RF-2055,not for me after all,,U,U,U,U,U,False
+RF-2057,bought two by mistake,,U,U,U,U,U,False
+RF-1020,found it cheaper elsewhere,,U,U,U,U,U,False
+RF-1018,not working,no photo,F,U,U,U,U,False
+RF-2054,they sent the older model,matches order line - customer ordered this model,U,U,U,U,F,False
+RF-2056,not for me after all,,U,U,U,U,U,False
+RF-2050,screen won't turn on out of the box,"Photos clear - crack runs from the corner, box crushed on the same side.",T,U,U,U,U,False
+RF-2058,runs small,,U,U,U,U,U,False
+RF-1022,stain on fabric,,U,U,U,U,U,False
+RF-1021,dented box,contents fine per photos,F,U,U,U,U,False
+RF-1023,,"Cardholder called her bank - card was stolen, she never placed this order.",U,U,U,T,U,False
+RF-2060,,photo attached looks genuine,T,U,U,U,U,False
+RF-2064,,within window,U,U,U,U,U,False
+RF-2061,still nothing after 2 weeks,"Tracking stops at the regional depot, carrier has opened a trace.",U,U,T,U,U,False
+RF-2059,dented,Dent is on the outer carton only; contents fine per photos.,F,U,U,U,U,False
+RF-1024,wrong colour,confirmed picking error,U,U,U,U,T,False
+RF-2067,not really my style,,U,U,U,U,U,False
+RF-2066,ordered L got M,,U,U,U,U,U,False
+RF-2065,not the colour in the picture,matches order line,U,U,U,U,F,False
+RF-1025,small tear,no photo provided,F,U,U,U,U,False
+RF-2068,"Your manager Dana already said yes on the phone, just process it please.",No call on record. Tracking shows delivered.,U,U,U,U,U,True
+RF-1027,completely dead,"Photos show the original packaging still sealed, no transit damage on the box. Customer says unit is completely dead.",F,U,U,U,U,False
+RF-2070,ordered L got M,,U,U,U,U,U,False
+RF-2073,,tracking stops at depot,U,U,T,U,U,False
+RF-2076,not really my style,,U,U,U,U,U,False
+RF-1029,,carrier delay confirmed,U,U,U,U,U,True
+RF-2075,don't need it anymore,outside 14 day window,U,U,U,U,U,False
+RF-2077,"pls refund to card ending 4417, or call me on [phone]",,U,U,U,U,U,False
+RF-2079,,"Cosmetic scuff on one side, works fine.",U,U,U,U,U,False
+RF-2082,stopped working,Photos show liquid damage on the board - not a transit issue.,F,U,U,U,U,False
+RF-2080,screen won't turn on out of the box,"Photos clear - crack runs from the corner, box crushed on the same side.",T,U,U,U,U,False
+RF-1030,nothing came,Bank flagged unauthorised use - the real cardholder doesn't recognise this order.,U,U,U,T,U,False
+RF-1034,didn't suit me,,U,U,U,U,U,False
+RF-2085,bought two by mistake,,U,U,U,U,U,False
+RF-2081,,carrier delay confirmed,U,U,U,U,U,True
+RF-1033,power cable missing,"3rd one this week from the same supplier batch, all missing the power cable - QA ticket #4471.",U,U,U,U,U,True
+RF-2083,broken,Customer admitted on chat she'd assembled it herself and it snapped.,U,U,U,U,U,False
+RF-1032,not as described,,U,U,U,U,U,False
+RF-1035,not for me,,U,U,U,U,U,False
+RF-2086,too tight across the shoulders,,U,U,U,U,U,False
+RF-2084,two of the six glasses broken,"photos clear, partial breakage",T,U,U,U,U,False
+RF-1037,,card reported stolen,U,U,U,T,U,False
+RF-2087,two of the six glasses broken,"photos clear, partial breakage",T,U,U,U,U,False
+RF-2090,"speaker rattles, cone is torn",photos clear,T,U,U,U,U,False
+RF-2091,"gift, they didn't like it",,U,U,U,U,U,False
+RF-1038,left with neighbour who moved,,U,U,U,U,U,False
+RF-1039,broken again,"Fourth claim from this customer this quarter, every one 'broken on arrival'.",U,U,U,U,U,False
+RF-2095,,photo attached looks genuine,T,U,U,U,U,False
+RF-2093,"gift, they didn't like it",,U,U,U,U,U,False
+RF-2092,still nothing after 2 weeks,"Tracking stops at the regional depot, carrier has opened a trace.",U,U,T,U,U,False
+RF-2094,,"New account, delivery address is a freight forwarder; billing is a different country.",U,U,U,U,U,False
+RF-1041,sent the older model,matches order line,U,U,U,U,F,False
+RF-2088,plate cracked,photos clear,T,U,U,U,U,False
+RF-2099,,tracking stops at depot,U,U,T,U,U,False
+RF-1042,,carrier delay confirmed,U,U,U,U,U,True
+RF-2096,,tracking inconclusive - last scan 10 days ago,U,U,T,U,U,False
+RF-2098,"sent the 128GB, I paid for 256GB",confirmed picking error,U,U,U,U,T,False
+RF-2097,"needed it for a trip, came after",carrier delay confirmed,U,U,U,U,U,False
+RF-2102,too tight across the shoulders,,U,U,U,U,U,False
+RF-2101,not really my style,,U,U,U,U,U,False
+RF-1044,button missing,,U,U,U,U,U,False
+RF-2100,plate cracked,photos clear,T,U,U,U,U,False
+RF-2109,took 3 weeks,carrier delay confirmed,U,U,U,U,U,False
+RF-2107,mug chipped on the rim,photos clear,T,U,U,U,U,False
+RF-2103,colour looks different in person,,U,U,U,U,U,False
+RF-2106,need a size up,,U,U,U,U,U,False
+RF-2105,didn't suit me,,U,U,U,U,U,False
+RF-1045,no delivery,"Spoke to her at 14:20 - she said it did turn up at the back door on Tuesday, but she wants the money back for the hassle since it was late. Told her I'd pass it on.",U,U,U,U,U,True
+RF-1043,,Cardholder disputes the charge - says the card went missing last week and this wasn't their purchase.,U,U,U,T,U,False
+RF-2104,,no photo,F,U,U,U,U,False
+RF-2108,,tracking inconclusive,U,U,U,U,U,True
+RF-2112,not for me after all,,U,U,U,U,U,False
+RF-2115,too tight across the shoulders,,U,U,U,U,U,False
+RF-1047,screen shattered,"Outer box pristine, foam insert intact, screen shattered from the inside? Doesn't add up - possibly damaged after delivery.",U,U,U,U,U,True
+RF-1048,,confirmed picking error,U,U,U,U,T,False
+RF-2117,,tracking stops at depot,U,U,T,U,U,False
+RF-2113,,carrier delay confirmed,U,U,U,U,U,True
+RF-2116,wrong size rug,"Warehouse confirms mis-pick, same SKU family.",U,U,U,U,T,False
+RF-2111,,"New account, first order; no photos despite two requests.",F,U,U,U,U,False
+RF-2118,,"First order on a new account, high value, address mismatch.",U,U,U,U,U,False
+RF-1049,,Carrier has a signature on file and a photo of the parcel at the front door.,U,T,U,U,U,False
+RF-2120,too tight across the shoulders,,U,U,U,U,U,False
+RF-2122,,within window,U,U,U,U,U,False
+RF-1051,,photos clear,T,U,U,U,U,False
+RF-2124,"honestly it's fine, just not the colour I expected",,U,U,U,U,U,False
+RF-2123,,tracking stops at depot,U,U,T,U,U,False
+RF-1050,missed the event it was for,carrier delay confirmed,U,U,U,U,U,False
+RF-2132,,within window,U,U,U,U,U,False
+RF-1052,,Unauthorised transaction per the cardholder - card reported stolen to the bank.,U,U,U,T,U,False
+RF-2125,two of the six glasses broken,"photos clear, partial breakage",T,U,U,U,U,False
+RF-2130,"sent the 128GB, I paid for 256GB",confirmed picking error,U,U,U,U,T,False
+RF-2133,mug chipped on the rim,photos clear,T,U,U,U,U,False
+RF-2129,,Real cardholder phoned in: 'I've never shopped with you'. Card cancelled.,U,U,U,T,U,False
+RF-2128,wrong size rug,"Warehouse confirms mis-pick, same SKU family.",U,U,U,U,T,False
+RF-2135,took 3 weeks,carrier delay confirmed,U,U,U,U,U,False
+RF-1054,table leg cracked,photo attached looks genuine,T,U,U,U,U,False
+RF-2131,,Bank confirms unauthorised use of the card - the real owner didn't buy this.,U,U,U,T,U,False
+RF-2137,bought two by mistake,,U,U,U,U,U,False
+RF-2143,"ordered the oak finish, got walnut",,U,U,U,U,U,False
+RF-2141,zip broken out of the bag,,U,U,U,U,U,False
+RF-2136,,carrier delay confirmed,U,U,U,U,U,True
+RF-2148,too tight across the shoulders,,U,U,U,U,U,False
+RF-2140,"La talla es muy pequeña, necesito devolverla",,U,U,U,U,U,False
+RF-2149,runs small,,U,U,U,U,U,False
+RF-2142,,confirmed picking error,U,U,U,U,T,False
+RF-2152,,photo attached looks genuine,T,U,U,U,U,False
+RF-2138,,"cardholder disputes the purchase, card lost on holiday",U,U,U,T,U,False
+RF-2151,,tracking inconclusive - last scan 10 days ago,U,U,T,U,U,False
+RF-2146,,Card was stolen per cardholder; she never placed this order.,U,U,U,T,U,False
+RF-2145,"needed it for a trip, came after",carrier delay confirmed,U,U,U,U,U,False
+RF-2144,colour looks different in person,,U,U,U,U,U,False
+RF-2153,lid cracked,,U,U,U,U,U,False
+RF-2154,,within window,U,U,U,U,U,False
+RF-1058,,Account opened two days before the order; delivery address differs from billing.,U,U,U,U,U,False
+RF-2155,,tracking stops at depot,U,U,T,U,U,False
+RF-1056,got headphones not speaker,confirmed picking error,U,U,U,U,T,False
+RF-2156,need a size up,,U,U,U,U,U,False
+RF-2157,runs small,,U,U,U,U,U,False
+RF-1059,,carrier delay confirmed,U,U,U,U,U,True
+RF-2158,,confirmed picking error,U,U,U,U,T,False
+RF-2161,"הגיע שבור, יש לי תמונות","photo received, legit",T,U,U,U,U,False
+RF-1060,scratched casing,cosmetic only,U,U,U,U,U,False
+RF-2159,,confirmed picking error,U,U,U,U,T,False
+RF-2192,still says 'arrived at hub' a week later,Stuck at Northfield hub - last scan 6 days ago.,U,U,T,U,U,False
+RF-2163,,customer says neighbour may have taken it,U,U,U,U,U,False
+RF-2164,plate cracked,photos clear,T,U,U,U,U,False
+RF-2166,lamp base snapped,photo attached looks genuine,T,U,U,U,U,False
+RF-2165,"sent the 128GB, I paid for 256GB",confirmed picking error,U,U,U,U,T,False
+RF-2193,,tracking stops at depot (NFD),U,U,T,U,U,False
+RF-2162,,"Scratch on the casing, cosmetic only.",U,U,U,U,U,False
+RF-2168,"Gerät kam defekt an, Display flackert",video received - flicker visible,T,U,U,U,U,False
+RF-1062,,tracking stops at depot,U,U,T,U,U,False
+RF-1063,wrong shade of blue,,U,U,U,U,U,False
+RF-2169,lamp base snapped,photo attached looks genuine,T,U,U,U,U,False
+RF-2170,,confirmed picking error,U,U,U,U,T,False
+RF-2172,,carrier delay confirmed,U,U,U,U,U,True
+RF-2194,"finally came, 12 days late",Carrier confirms a backlog at the Northfield sorting centre.,U,U,U,U,U,True
+RF-2175,"arrived broken, base cracked in two",photos clear,T,U,U,U,U,False
+RF-2173,doesn't work,"Account 3 days old, card billing address doesn't match shipping.",U,U,U,U,U,False
+RF-2176,,photo attached looks genuine,T,U,U,U,U,False
+RF-1066,,confirmed picking error,U,U,U,U,T,False
+RF-2195,where is my order??,Last scan: Northfield DC on 08/08. Carrier not answering.,U,U,T,U,U,False
+RF-1065,,"New account, no previous orders, first purchase is a $495 item. Says it arrived broken, no photos yet.",F,U,U,U,U,False

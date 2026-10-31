@@ -1,0 +1,24 @@
+# env
+.venv/
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+
+# outputs
+outputs/
+*.log
+
+# build metadata from pip install -e .
+*.egg-info/
+build/
+dist/
+
+# local-only material
+docs/private/
+docs/superpowers/
+.superpowers/
+docs/writeup.pptx
+docs/writeup_v2.pptx
+docs/~$*.pptx

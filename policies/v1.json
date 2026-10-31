@@ -1,0 +1,274 @@
+{
+  "version": 1,
+  "changelog": "Initial policy from the Refund Ops Manager's notes and the EDA, backtested on 3 months of history (docs/eda/findings.md, 'The line'). Cap $200 chosen as the largest with zero detectable bad auto-approvals.",
+  "created_at": "2026-10-30",
+  "facts": [
+    {
+      "id": "damage_photo_confirmed",
+      "question": "Does the note say a photo or video was received that shows damage to the item itself? Our support agents write shorthand: 'photos clear', 'photo attached looks genuine', 'photo received, legit', or 'video received' on a damage claim means the photo confirms the claimed damage, so answer true. Answer false if the note says no photo was provided, the item or contents are fine, only the packaging is damaged, or the damage is not from transit (for example liquid damage or damage after delivery)."
+    },
+    {
+      "id": "carrier_proof_of_delivery",
+      "question": "Does the note say the carrier has a signature, a delivery photo, or a locker/collection record proving the parcel was handed over? A plain 'delivered' tracking status without signature, photo, or locker record does not count."
+    },
+    {
+      "id": "carrier_investigation_open",
+      "question": "Does the note say the carrier opened a trace, ticket, or investigation, or that tracking is stuck or stopped with no delivery scan?"
+    },
+    {
+      "id": "card_confirmed_stolen",
+      "question": "Does the note say the card was reported or confirmed stolen, lost, or used without the cardholder's authorisation?"
+    },
+    {
+      "id": "our_error_confirmed",
+      "question": "Does the note say the warehouse or support confirmed a picking error, a mis-pick, or that the wrong item was sent (our mistake)?"
+    }
+  ],
+  "rules": [
+    {
+      "id": "fraud_flag_to_fraud_team",
+      "name": "Fraud flag goes to the fraud team",
+      "description": "The payment provider raised a fraud flag. Policy note 5: the fraud team decides.",
+      "when": [
+        {
+          "field": "fraud_flag",
+          "op": "is_true"
+        }
+      ],
+      "then": "route",
+      "queue": "fraud"
+    },
+    {
+      "id": "fraud_check_missing",
+      "name": "Fraud check missing",
+      "description": "The fraud flag is blank or unreadable, so we cannot tell if the payment is safe.",
+      "when": [
+        {
+          "field": "fraud_flag",
+          "op": "is_unknown"
+        }
+      ],
+      "then": "route",
+      "queue": "reviewer"
+    },
+    {
+      "id": "amount_unknown",
+      "name": "Amount unreadable",
+      "description": "The requested amount could not be read as a number.",
+      "when": [
+        {
+          "field": "amount_usd",
+          "op": "is_unknown"
+        }
+      ],
+      "then": "route",
+      "queue": "reviewer"
+    },
+    {
+      "id": "duplicate_conflict",
+      "name": "Duplicate request with different details",
+      "description": "The same request id appears more than once in the file with different content (for example two amounts). A person must pick the right one.",
+      "when": [
+        {
+          "field": "duplicate_conflict",
+          "op": "is_true"
+        }
+      ],
+      "then": "route",
+      "queue": "reviewer"
+    },
+    {
+      "id": "over_cap",
+      "name": "Over the auto-approve cap",
+      "description": "Amount above $200, the cap the system may approve on its own. Backtest: zero detectable bad approvals up to this cap; evidence above $150 is thin (5 past cases).",
+      "when": [
+        {
+          "field": "amount_usd",
+          "op": ">",
+          "value": 200
+        }
+      ],
+      "then": "route",
+      "queue": "reviewer"
+    },
+    {
+      "id": "repeat_refunder",
+      "name": "Repeat refunder",
+      "description": "Two or more refunds already granted in the last 12 months.",
+      "when": [
+        {
+          "field": "prior_refunds_12m",
+          "op": ">=",
+          "value": 2
+        }
+      ],
+      "then": "route",
+      "queue": "reviewer"
+    },
+    {
+      "id": "new_account",
+      "name": "New account",
+      "description": "Account under 3 months old; the history shows new accounts behind most bad outcomes.",
+      "when": [
+        {
+          "field": "tenure_months",
+          "op": "<",
+          "value": 3
+        }
+      ],
+      "then": "route",
+      "queue": "reviewer"
+    },
+    {
+      "id": "tenure_unknown",
+      "name": "Tenure unknown",
+      "description": "Account age is missing, so the new-account check cannot run.",
+      "when": [
+        {
+          "field": "tenure_months",
+          "op": "is_unknown"
+        }
+      ],
+      "then": "route",
+      "queue": "reviewer"
+    },
+    {
+      "id": "changed_mind_outside_window",
+      "name": "Change of mind after 14 days",
+      "description": "Policy note 2: change of mind is accepted within 14 days of delivery, no exceptions. A person must reject or make an exception.",
+      "when": [
+        {
+          "field": "stated_reason",
+          "op": "==",
+          "value": "changed_mind"
+        },
+        {
+          "field": "days_since_delivery",
+          "op": ">",
+          "value": 14
+        }
+      ],
+      "then": "route",
+      "queue": "reviewer"
+    },
+    {
+      "id": "changed_mind_days_unknown",
+      "name": "Change of mind, delivery date unknown",
+      "description": "Cannot check the 14-day window because days since delivery is missing.",
+      "when": [
+        {
+          "field": "stated_reason",
+          "op": "==",
+          "value": "changed_mind"
+        },
+        {
+          "field": "days_since_delivery",
+          "op": "is_unknown"
+        }
+      ],
+      "then": "route",
+      "queue": "reviewer"
+    },
+    {
+      "id": "never_arrived_needs_carrier_check",
+      "name": "Never arrived needs a carrier check",
+      "description": "Policy note 4: depends on carrier evidence (signature, delivery photo, open investigation). A person checks.",
+      "when": [
+        {
+          "field": "stated_reason",
+          "op": "==",
+          "value": "never_arrived"
+        }
+      ],
+      "then": "route",
+      "queue": "reviewer"
+    },
+    {
+      "id": "late_delivery_partial_call",
+      "name": "Late delivery is a partial-refund call",
+      "description": "Policy note 6: partials for late delivery are the reviewer's call.",
+      "when": [
+        {
+          "field": "stated_reason",
+          "op": "==",
+          "value": "late_delivery"
+        }
+      ],
+      "then": "route",
+      "queue": "reviewer"
+    },
+    {
+      "id": "our_mistake_confirmed",
+      "name": "Our mistake, confirmed",
+      "description": "Policy note 6: wrong item or picking error confirmed by us: refund in full, no questions asked. Without confirmation the item may match the order, so a person checks.",
+      "when": [
+        {
+          "field": "stated_reason",
+          "op": "==",
+          "value": "wrong_item"
+        },
+        {
+          "field": "our_error_confirmed",
+          "op": "is_true"
+        }
+      ],
+      "then": "approve"
+    },
+    {
+      "id": "damaged_small",
+      "name": "Damaged, small amount",
+      "description": "Policy note 3 needs a photo only above $50. Below that, approve.",
+      "when": [
+        {
+          "field": "stated_reason",
+          "op": "==",
+          "value": "arrived_damaged"
+        },
+        {
+          "field": "amount_usd",
+          "op": "<=",
+          "value": 50
+        }
+      ],
+      "then": "approve"
+    },
+    {
+      "id": "damaged_with_photo",
+      "name": "Damaged, photo shows the damage",
+      "description": "Policy note 3: over $50 we need a photo. The note confirms a photo was received and it shows damage to the item.",
+      "when": [
+        {
+          "field": "stated_reason",
+          "op": "==",
+          "value": "arrived_damaged"
+        },
+        {
+          "field": "amount_usd",
+          "op": ">",
+          "value": 50
+        },
+        {
+          "field": "damage_photo_confirmed",
+          "op": "is_true"
+        }
+      ],
+      "then": "approve"
+    },
+    {
+      "id": "simple_return",
+      "name": "Simple return",
+      "description": "Wrong size, or change of mind within 14 days, under the cap, from a customer with no red flags.",
+      "when": [
+        {
+          "field": "stated_reason",
+          "op": "in",
+          "value": [
+            "wrong_size",
+            "changed_mind"
+          ]
+        }
+      ],
+      "then": "approve"
+    }
+  ]
+}

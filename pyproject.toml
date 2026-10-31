@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "refund-agent"
+version = "0.1.0"
+description = "Refund triage: rules decide, an LLM reads notes, people handle the rest."
+requires-python = ">=3.12"
+
+[project.scripts]
+refund-agent = "src.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["src", "src.*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
