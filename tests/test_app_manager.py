@@ -47,7 +47,7 @@ def test_form_add_route_rule_dry_run_and_publish(with_v1):
     at.button(key="btn_dry_run").click().run()
     assert not at.exception
     assert any("decided differently" in str(m.value) for m in at.markdown)
-    assert not at.metric                                                # no tiles repeating the sentence
+    assert any(m.label == "to automatic" for m in at.metric)            # the big-number tiles are shown
     at.button(key="btn_publish").click().run()
     assert not at.exception
     assert list_versions() == [1, 2]
