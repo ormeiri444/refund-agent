@@ -57,15 +57,15 @@ ss = st.session_state
 def reset_proposal() -> None:
     """Forget the proposal and every checkbox value, so nothing resurrects on the next run."""
     ss["proposal"], ss["proposal_notes"], ss["dry_run"], ss["verdict"], ss["translated"], ss["translated_from"] = None, [], None, None, None, None
-    ss["_clear_checkboxes"] = True
+    ss["checkbox_gen"] = ss.get("checkbox_gen", 0) + 1   # new widget keys: the browser forgets the old tick state
     ss["proposal_base"] = live.version
 
 
 if ss.get("proposal_base") != live.version:
     reset_proposal()
-if ss.pop("_clear_checkboxes", False):          # runs before any widget is drawn
-    for key in [k for k in ss if str(k).startswith("enabled_")]:
-        del ss[key]
+gen = ss.setdefault("checkbox_gen", 0)
+for key in [k for k in ss if str(k).startswith("enabled_") and not str(k).endswith(f"@{gen}")]:
+    del ss[key]                                   # tick state from a discarded or published proposal
 
 
 def proposal() -> Policy:
@@ -101,7 +101,7 @@ with st.expander("Fact questions the model answers from the notes", expanded=Fal
 st.markdown("**Rules, top to bottom** (first match decides; untick to disable in the proposal):")
 for i, rule in enumerate(proposal().rules, start=1):
     col_a, col_b = st.columns([1, 11])
-    want = col_a.checkbox("on", value=rule.enabled, key=f"enabled_{rule.id}", label_visibility="collapsed")
+    want = col_a.checkbox("on", value=rule.enabled, key=f"enabled_{rule.id}@{gen}", label_visibility="collapsed")
     col_b.markdown(f"{i}. **{rule.name}** `{rule.id}` — {proposal().describe_rule(rule)}" + ("" if rule.enabled else " _(disabled)_"))
     if want != rule.enabled:
         if want:

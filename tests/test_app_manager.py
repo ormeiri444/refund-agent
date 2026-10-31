@@ -21,6 +21,11 @@ def run_page():
     return AppTest.from_file(PAGE, default_timeout=60).run()
 
 
+def enabled_box(at, rule_id: str):
+    """The on/off checkbox of a rule. Its key carries a generation suffix that changes on discard / publish."""
+    return next(c for c in at.checkbox if str(c.key).split("@")[0] == f"enabled_{rule_id}")
+
+
 def test_manager_page_renders_live_policy(with_v1):
     at = run_page()
     assert not at.exception
@@ -76,7 +81,7 @@ def test_fail_verdict_requires_publish_anyway(with_v1):
 
 def test_toggle_disable_rule_into_proposal(with_v1):
     at = run_page()
-    at.checkbox(key="enabled_damaged_small").set_value(False).run()
+    enabled_box(at, "damaged_small").set_value(False).run()
     assert not at.exception
     at.button(key="btn_dry_run").click().run()
     at.button(key="btn_publish").click().run()
@@ -96,7 +101,7 @@ def test_add_fact_question_offline_is_unknown_but_allowed(with_v1):
 
 def test_rollback_republishes_old_content(with_v1):
     at = run_page()
-    at.checkbox(key="enabled_damaged_small").set_value(False).run()
+    enabled_box(at, "damaged_small").set_value(False).run()
     at.button(key="btn_publish").click().run()
     assert list_versions() == [1, 2]
     at = run_page()
@@ -122,3 +127,16 @@ def test_sidebar_model_switch_saves_settings(with_v1):
     assert not at.exception
     from src.app_settings import load_app_settings
     assert load_app_settings().extractor_model == "claude-sonnet-5-5"
+
+
+def test_discard_resets_rule_checkboxes(with_v1):
+    at = run_page()
+    enabled_box(at, "damaged_small").set_value(False).run()
+    assert any("disabled rule damaged_small" in str(m.value) for m in at.markdown)
+    old_key = enabled_box(at, "damaged_small").key
+    at.button(key="btn_discard").click().run()
+    assert not at.exception
+    box = enabled_box(at, "damaged_small")
+    assert box.value is True and box.key != old_key          # a fresh widget, so the browser shows it ticked again
+    assert not any("disabled rule" in str(m.value) for m in at.markdown)
+    assert any("Proposal: none yet" in str(s.value) for s in at.subheader)

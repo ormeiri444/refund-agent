@@ -76,22 +76,27 @@ def test_translator_forces_rule_id_on_replace():
     assert op.op == "replace_rule" and op.rule.id == "over_cap"
 
 
+def enabled_box(at, rule_id: str):
+    """The on/off checkbox of a rule; its key carries a generation suffix that changes on discard / publish / rollback."""
+    return next(c for c in at.checkbox if str(c.key).split("@")[0] == f"enabled_{rule_id}")
+
+
 # ---- Important 3: checkbox disables must not resurrect after Discard / publish / rollback
 def test_discard_after_checkbox_leaves_no_proposal(tmp_outputs):
     save_policy(load_policy(1, policy_dir=ROOT / "policies"))
     at = AppTest.from_file(MANAGER, default_timeout=60).run()
-    at.checkbox(key="enabled_damaged_small").set_value(False).run()
+    enabled_box(at, "damaged_small").set_value(False).run()
     assert at.session_state["proposal"] is not None
     at.button(key="btn_discard").click().run()
     at.run()
     assert at.session_state["proposal"] is None
-    assert at.checkbox(key="enabled_damaged_small").value is True
+    assert enabled_box(at, "damaged_small").value is True
 
 
 def test_rollback_after_checkbox_publish_leaves_no_proposal(tmp_outputs):
     save_policy(load_policy(1, policy_dir=ROOT / "policies"))
     at = AppTest.from_file(MANAGER, default_timeout=60).run()
-    at.checkbox(key="enabled_damaged_small").set_value(False).run()
+    enabled_box(at, "damaged_small").set_value(False).run()
     at.button(key="btn_publish").click().run()
     at.run()
     assert list_versions() == [1, 2] and at.session_state["proposal"] is None
