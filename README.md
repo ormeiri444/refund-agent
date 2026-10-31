@@ -6,7 +6,7 @@ notes, and people handle everything else**, plus the two mechanisms around it: t
 manager's policy editor.
 
 - Write-up (slides): [docs/writeup.pptx](docs/writeup.pptx)
-- Screen recording (3-5 min): _link to be added_
+- Screen recording (9 min): [docs/demo.mp4](docs/demo.mp4)
 - Evidence for the line: [docs/eda/findings.md](docs/eda/findings.md) (EDA + backtest, generated from the data)
 - Model evaluation: [docs/eda/extractor_eval.md](docs/eda/extractor_eval.md)
 
