@@ -72,6 +72,11 @@ def money(x) -> str:
         return "unknown"
 
 
+def md(text) -> str:
+    """Escape free text for st.markdown: a bare '$' pair is otherwise rendered as LaTeX math."""
+    return str(text).replace("$", "\\$") if text is not None else ""
+
+
 def fact_lines(facts_used: dict) -> list[str]:
     """facts_used from a Decision record -> readable lines with the quote that justified each."""
     out = []
@@ -79,5 +84,5 @@ def fact_lines(facts_used: dict) -> list[str]:
         value = v.get("value") if isinstance(v, dict) else getattr(v, "value", None)
         quote = v.get("quote", "") if isinstance(v, dict) else getattr(v, "quote", "")
         word = {True: "yes", False: "no", None: "unknown"}[value]
-        out.append(f"**{fact_id.replace('_', ' ')}**: {word}" + (f' — "{quote}"' if quote else ""))
+        out.append(f"**{fact_id.replace('_', ' ')}**: {word}" + (f' — "{md(quote)}"' if quote else ""))
     return out

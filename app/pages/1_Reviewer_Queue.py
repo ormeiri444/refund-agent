@@ -8,7 +8,7 @@ from pathlib import Path
 import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from app._shared import fact_lines, live_policy, money, sidebar_status  # noqa: E402
+from app._shared import fact_lines, live_policy, md, money, sidebar_status  # noqa: E402
 from src.policy_notes import notes_for  # noqa: E402
 from src.queue import REVIEWERS, load_auto_approved, load_queue, load_reviewer_decisions, record_reviewer_decision  # noqa: E402
 from src.schemas.review import ReviewerDecision  # noqa: E402
@@ -40,16 +40,16 @@ row = shown.set_index("request_id").loc[selected]
 left, right = st.columns([3, 2])
 with left:
     st.subheader(f"{selected} · {money(row.amount_usd)} · {row.stated_reason.replace('_', ' ')}")
-    st.markdown(f"**Why it is here:** {row.reason}")
+    st.markdown(f"**Why it is here:** {md(row.reason)}")
     rule = next((r for r in policy.rules if r.id == row.rule_id), None) if policy else None
     st.caption(f"Rule `{row.rule_id}` (policy v{int(row.policy_version)}): " + (policy.describe_rule(rule) if rule else "no rule matched"))
     facts = fact_lines(row.facts_used)
     st.markdown("**What the notes say** (read by the model, with the words it relied on):")
     st.markdown("\n".join(f"- {line}" for line in facts) if facts else "- no note-based fact was needed for this rule")
-    st.markdown("**Customer wrote:** " + (row.customer_note or "_nothing_"))
-    st.markdown("**Support wrote:** " + (row.support_note or "_nothing_"))
+    st.markdown("**Customer wrote:** " + (md(row.customer_note) or "_nothing_"))
+    st.markdown("**Support wrote:** " + (md(row.support_note) or "_nothing_"))
     for number, text in notes_for(row.stated_reason, row.fraud_flag):
-        st.info(f"Policy note {number}: {text}")
+        st.info(f"Policy note {number}: {md(text)}")
 with right:
     st.markdown("**Request details**")
     details = {
