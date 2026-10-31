@@ -246,14 +246,10 @@ table(s, COL2_X, 3.85, COL, [
 text(s, COL2_X, 5.9, COL, 1.0, "A wrong 'yes' could approve money, so that is the number that must be perfect. A missed 'yes' only sends the case to a person.", size=12, color=MUTED)
 notes(s, "Checked on 205 notes labelled by hand; details and every mismatch in docs/eda/extractor_eval.md.")
 
-# ---------------------------------------------------------------- 7. how it was built, what was cut, next
+# ---------------------------------------------------------------- 7. what was cut, next
 s = prs.slides.add_slide(BLANK)
-title(s, "How it was built, what was left out, and what comes next")
-card(s, M, 1.35, COL, 2.55, "AI coding tools", [
-    "Built with Claude Code: a design conversation, a written plan with tests for each step, then one branch per step.",
-    "Thrown away: the first note question, 'photo attached'. The replay showed two approvals where the photo proved the item was fine. Also a first cache design that would have re-paid for every unknown answer.",
-], size=12)
-card(s, M, 4.1, COL, 2.85, "Left out on purpose", [
+title(s, "What was left out, and what comes next")
+card(s, M, 1.35, COL, 5.6, "Left out on purpose", [
     "Login, hosting, real payments, a real fraud-team workflow, a database, notifications.",
     "Editing an existing rule in place: today it is done by sentence, or by switching one rule off and adding another.",
     "Approval rules sit below the guard rules by default; moving one up is possible, and the red list in the dry run is the safety net.",
