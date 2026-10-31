@@ -109,4 +109,7 @@ with st.expander(f"Approved automatically by the system ({len(load_auto_approved
         st.dataframe(a, hide_index=True, width="stretch")
 with st.expander("Decided by reviewers"):
     done = load_reviewer_decisions()
-    st.dataframe(done, hide_index=True, width="stretch") if not done.empty else st.write("none yet")
+    if done.empty:
+        st.write("none yet")
+    else:
+        st.dataframe(done, hide_index=True, width="stretch")

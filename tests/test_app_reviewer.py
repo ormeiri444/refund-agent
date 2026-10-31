@@ -60,3 +60,12 @@ def test_reviewer_escapes_dollar_signs_in_markdown(ran):
     why = next(m.value for m in at.markdown if m.value.startswith("**Why it is here:**"))
     assert "\\$200" in why and "\\$150" in why
     assert "$2" not in why.replace("\\$", "")
+
+
+def test_reviewer_history_does_not_leak_widget_repr(ran):
+    """A bare ternary at top level is auto-written by Streamlit magic, dumping the DeltaGenerator docstring."""
+    at = AppTest.from_file(str(ROOT / "app" / "pages" / "1_Reviewer_Queue.py"), default_timeout=30).run()
+    at.button(key="btn_approve").click().run()
+    assert not at.exception
+    leaked = [e for e in at.main if type(e).__name__ == "Help"]
+    assert not leaked, leaked
