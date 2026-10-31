@@ -45,11 +45,6 @@ def history_df() -> pd.DataFrame:
     return load_requests(settings.DATA_DIR / "history.csv")
 
 
-@st.cache_data(show_spinner=False)
-def pending_df() -> pd.DataFrame:
-    return load_requests(settings.DATA_DIR / "pending.csv")
-
-
 # ------------------------------------------------------------------ proposal state
 ss = st.session_state
 
@@ -230,7 +225,7 @@ if ss["proposal"]:
 
 # ------------------------------------------------------------------ 6. dry run
 st.subheader("Dry run: what would change")
-st.caption("Compares the policy in force with the proposal on the 248 past requests and on the pending file. No money moves.")
+st.caption("Compares the policy in force with the proposal on the 248 past requests. No money moves.")
 
 
 def read_new_facts(policy: Policy, new_ids: list[str], df: pd.DataFrame):
@@ -263,14 +258,13 @@ if st.button("Dry run", key="btn_dry_run", disabled=not net_notes):
     provider, _ = get_fact_provider()
     with st.spinner("Replaying both policies..."):
         d_hist = diff_policies(history_df(), live, prop, provider)
-        d_pend = diff_policies(pending_df(), live, prop, provider)
         verdict = run_backtest(history_df(), prop, provider)
-    ss["dry_run"] = {"history": d_hist, "pending": d_pend, "new_fact_answers": new_fact_answers, "new_ids": new_ids}
+    ss["dry_run"] = {"history": d_hist, "new_fact_answers": new_fact_answers, "new_ids": new_ids}
     ss["verdict"] = verdict
 
 if ss.get("dry_run"):
     dr, verdict = ss["dry_run"], ss["verdict"]
-    for title, d in (("Past 3 months (248 requests)", dr["history"]), ("Pending file", dr["pending"])):
+    for title, d in (("Past 3 months (248 requests)", dr["history"]),):
         st.markdown(f"**{title}**: {d.n_flipped} request(s) would flip.")
         m1, m2, m3 = st.columns(3)
         m1.metric("to automatic", len(d.to_auto), money(d.dollars_to_auto))
@@ -286,7 +280,7 @@ if ss.get("dry_run"):
         if d.per_request:
             with st.expander(f"Flipped requests ({d.n_flipped})"):
                 st.dataframe(pd.DataFrame(d.per_request), hide_index=True, width="stretch")
-    if dr["history"].n_flipped == 0 and dr["pending"].n_flipped == 0:
+    if dr["history"].n_flipped == 0:
         st.info("Nothing flips. If you added an approve rule meant to override a guard (for example 'stolen-card cases go straight "
                 "through' must beat the fraud-flag rule), it sits at the bottom by default: set its Position to top and add it again.")
     st.markdown(f"**Backtest verdict for the proposal: {verdict.verdict}** — "
