@@ -5,6 +5,8 @@ reads the rest. This project is a refund triage system where **rules decide the 
 notes, and people handle everything else**, plus the two mechanisms around it: the reviewer's queue and the
 manager's policy editor.
 
+- Write-up (slides): [docs/writeup.pptx](docs/writeup.pptx)
+- Screen recording (3-5 min): _link to be added_
 - Evidence for the line: [docs/eda/findings.md](docs/eda/findings.md) (EDA + backtest, generated from the data)
 - Model evaluation: [docs/eda/extractor_eval.md](docs/eda/extractor_eval.md)
 
@@ -13,17 +15,30 @@ manager's policy editor.
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt && pip install -e .
-cp .env.example .env            # optional: paste your Anthropic API key (see "With and without a key")
+cp .env.example .env            # optional: put your Anthropic API key in it (see "Plugging in an API key")
 
 refund-agent decide data/pending.csv      # decide every request in a CSV with pending.csv's columns
 refund-agent backtest                     # replay the policy on history.csv: PASS/FAIL, cap table, "The line"
 streamlit run app/Home.py                 # the demo: Reviewer Queue and Manager Policy
-pytest                                    # 170+ tests, no key needed
+pytest                                    # 180+ tests, no key needed
 ```
 
 `decide` prints a summary (approved / routed, by rule) and writes one JSON line per request to
 `outputs/system_decisions.jsonl` with the outcome, the rule that fired, the facts it used, and the policy version.
 Works on any file with the same columns (`refund-agent decide my_file.csv`).
+
+### Plugging in an API key
+
+Either of these works; the environment variable wins if both are set:
+
+```bash
+cp .env.example .env            # then edit .env so it reads  ANTHROPIC_API_KEY=sk-ant-...
+export ANTHROPIC_API_KEY=sk-ant-...   # or set it in the shell before running
+```
+
+`.env` is read from the project root by `python-dotenv` when `src` is imported, so the CLI, the Streamlit app and the
+scripts all pick it up; it is gitignored. To confirm it took: `refund-agent decide data/pending.csv` prints
+"LLM unavailable (no ANTHROPIC_API_KEY)" when it did not, and the app sidebar says the same.
 
 ### With and without a key
 
@@ -99,3 +114,12 @@ $0.0002 per call. Needs a key; costs about $0.05. Results and every mismatch: `d
 
 Nothing in the app is a mock: the pages call the same engine, extractor and decision logs as the CLI. There is no
 payments integration ("approve" writes a decision record) and the fraud queue is a label, not a workflow.
+
+## How I used AI coding tools
+
+Built with Claude Code: a design conversation first, then a written plan with tests for each step, then one branch
+per step with a review pass between them (the spec and plan are local notes, not shipped). One thing it produced
+that I threw away: the first note question was "photo attached" (does the note say a photo was sent?). Replaying
+it on history showed approvals where the photo proved the item was fine, so the question became "does the photo
+show damage to the item itself" (`damage_photo_confirmed` in `policies/v1.json`), with the support shorthand
+spelled out in the question.
