@@ -5,7 +5,7 @@ reads the rest. This project is a refund triage system where **rules decide the 
 notes, and people handle everything else**, plus the two mechanisms around it: the reviewer's queue and the
 manager's policy editor.
 
-- Write-up (slides): [docs/writeup.pptx](docs/writeup.pptx)
+- Presentation (slides): [docs/presentation.pptx](docs/presentation.pptx)
 - Screen recording (9 min): [docs/demo.mp4](docs/demo.mp4)
 - Evidence for the line: [docs/eda/findings.md](docs/eda/findings.md) (EDA + backtest, generated from the data)
 - Model evaluation: [docs/eda/extractor_eval.md](docs/eda/extractor_eval.md)
@@ -45,7 +45,7 @@ scripts all pick it up; it is gitignored. To confirm it took: `refund-agent deci
 Everything runs without a key. The LLM does exactly one thing at decision time: answer the policy's yes/no questions
 about the free-text notes ("does the note say a photo shows the damage?"). Without a key those answers are
 "unknown", and a request whose approval depends on them goes to a person. The model's answers for the historical
-notes are committed in `data/llm_cache_seed.jsonl`, so `refund-agent backtest` reproduces the write-up's numbers
+notes are committed in `data/llm_cache_seed.jsonl`, so `refund-agent backtest` reproduces the presentation's numbers
 offline. With `ANTHROPIC_API_KEY` in `.env`, new notes are read live. Default model `claude-haiku-5-5` for both
 reading notes and translating rules (switchable in the app sidebar, or `REFUND_AGENT_MODEL` /
 `REFUND_AGENT_TRANSLATOR_MODEL`); about $0.0002 per note-reading call, and most requests need no call.

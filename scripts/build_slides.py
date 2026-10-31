@@ -1,6 +1,6 @@
-"""Build the write-up deck (8 slides, plain words) from the numbers in the repo.
+"""Build the presentation (11 slides, plain words) from the numbers in the repo.
 
-Run: python scripts/build_slides.py            -> docs/writeup.pptx (or docs/writeup_v2.pptx if the first is open in PowerPoint)
+Run: python scripts/build_slides.py            -> docs/presentation.pptx
 Layout rules that keep PowerPoint from drifting: at most two columns, one kind of element per column,
 short sentences, generous boxes, tables with short cells and nothing placed below them in the same column.
 """
@@ -16,9 +16,9 @@ from pptx.util import Emu, Inches, Pt
 
 ROOT = Path(__file__).resolve().parents[1]
 FIG = ROOT / "docs" / "eda" / "figures"
-OUT = ROOT / "docs" / "writeup.pptx"
-if (ROOT / "docs" / "~$writeup.pptx").exists():          # PowerPoint lock file: the deck is open, do not overwrite it
-    OUT = ROOT / "docs" / "writeup_v2.pptx"
+OUT = ROOT / "docs" / "presentation.pptx"
+if (ROOT / "docs" / "~$presentation.pptx").exists():     # PowerPoint lock file: the deck is open, do not overwrite it
+    raise SystemExit("docs/presentation.pptx is open in PowerPoint; close it and run again")
 
 TEAL, TEAL_DARK, SAND, INK, MUTED, CORAL, WHITE = "0F6E6E", "0A4A4A", "F1EDE4", "1B1B1B", "6B6B6B", "E4573D", "FFFFFF"
 HEAD, BODY = "Cambria", "Calibri"
@@ -111,6 +111,26 @@ def notes(s, t):
     s.notes_slide.notes_text_frame.text = t
 
 
+def node(s, x, y, w, h, heading, sub, fill=SAND, head_color=TEAL_DARK, size=11):
+    """One box of a flow diagram: bold heading, muted detail under it."""
+    shape(s, x, y, w, h, fill=fill, kind=MSO_SHAPE.ROUNDED_RECTANGLE)
+    text(s, x + 0.15, y + 0.08, w - 0.3, h - 0.16, [
+        (heading, {"size": 13, "bold": True, "font": HEAD, "color": head_color, "gap": 3}),
+        (sub, {"size": size, "color": INK if fill == SAND else WHITE, "gap": 0}),
+    ])
+
+
+def arrow(s, x, y, w, h, kind=MSO_SHAPE.DOWN_ARROW, fill=TEAL):
+    shape(s, x, y, w, h, fill=fill, kind=kind)
+
+
+def panel(s, x, y, w, h, heading, body, head_color=TEAL_DARK, size=12):
+    """A card with running text instead of bullets."""
+    shape(s, x, y, w, h, fill=SAND, kind=MSO_SHAPE.ROUNDED_RECTANGLE)
+    text(s, x + 0.25, y + 0.15, w - 0.5, 0.45, heading, size=16, bold=True, font=HEAD, color=head_color)
+    text(s, x + 0.25, y + 0.65, w - 0.5, h - 0.8, [(b, {"size": size, "gap": 6}) for b in body])
+
+
 # ---------------------------------------------------------------- 1. the process today
 s = prs.slides.add_slide(BLANK)
 shape(s, 0, 0, W, H, fill=TEAL_DARK)
@@ -128,7 +148,100 @@ bottom = picture(s, FIG / "fig4_reviewer_minutes_by_band.png", COL2_X, 1.9, COL)
 text(s, COL2_X, bottom + 0.2, COL, 1.2, "Where reviewer time goes. The tiny approvals under $50 are only 6% of it. Most time goes to $50–200 requests, where the answer sits in a note: was there a photo, did the warehouse confirm a mistake.", size=12, color=SAND)
 notes(s, "111 of 248 requests were decided automatically, 137 by people. Mean 8.2 minutes per human decision.")
 
-# ---------------------------------------------------------------- 2. the line
+# ---------------------------------------------------------------- 2. today
+s = prs.slides.add_slide(BLANK)
+title(s, "Today: one old rule, then one queue for everything else")
+CX = M + COL / 2
+node(s, M, 1.35, COL, 0.8, "A refund request arrives", "From the web form or the support desk. About 22 a week; 248 in the 3 months we looked at.")
+arrow(s, CX - 0.17, 2.15, 0.34, 0.3)
+node(s, M, 2.45, COL, 1.05, "An old automatic rule, set up by IT last year",
+     "Nobody remembers its logic. Worked out from the data: $54 or less, no earlier refunds, account 9 months or older. It reads nothing in the notes.")
+HALF = (COL - 0.25) / 2
+arrow(s, M + HALF / 2 - 0.17, 3.5, 0.34, 0.3)
+arrow(s, M + HALF + 0.25 + HALF / 2 - 0.17, 3.5, 0.34, 0.3)
+node(s, M, 3.8, HALF, 1.45, "Approved, no record of why", "111 of 248 requests (45%), but only $3,377: 14% of the money. One of them later charged back.")
+node(s, M + HALF + 0.25, 3.8, HALF, 1.45, "One queue; four people read the rest",
+     "137 requests, 8 minutes each: 1,119 minutes. No order: a $20 shirt in the wrong size waits behind a $495 fraud case.")
+arrow(s, M + HALF + 0.25 + HALF / 2 - 0.17, 5.25, 0.34, 0.3)
+node(s, M + HALF + 0.25, 5.55, HALF, 1.4, "Approve, partial, reject, or fraud team",
+     "Guided by seven notes from the manager that live in her email, not in any tool. 10 decisions went against them.")
+text(s, M, 5.55, HALF, 1.4, "The rule cannot be changed by the people who own the policy: nobody knows where it lives or what it says.", size=12, color=MUTED)
+card(s, COL2_X, 1.35, COL, 5.6, "What it costs", [
+    "Reviewer time goes to easy cases: 28 requests of $50 or less were approved in full after a person read them. 22 reached a person only because the account was new; 21 of those were approved anyway.",
+    "Fraud-flagged cases sit in the same queue as everything else. 3 were approved without asking the fraud team; 2 of those charged back.",
+    "8 chargebacks in 3 months, about $2,519 including the $25 fees. 7 of the 8 were approved by a person, and most carried a sign that could have been read: a fraud flag, or a carrier signature on a 'never arrived' claim.",
+    "3 rejections were overturned on appeal; one of those customers closed the account.",
+    "When something goes wrong, there is no record of why the request was approved, and no way to test a different rule before trying it on real customers.",
+], size=12, head_color=CORAL)
+notes(s, "Numbers from docs/eda/findings.md sections 2 to 6: the old rule reverse-engineered, reviewer minutes by band, bad outcomes, decisions against policy.")
+
+# ---------------------------------------------------------------- 3. what we added
+s = prs.slides.add_slide(BLANK)
+title(s, "What we added: rules, a note reader, two screens, and a test")
+Y1, H1 = 1.35, 1.6
+x = M
+node(s, x, Y1, 1.5, H1, "A request", "From the web form or the support desk, as a CSV."); x += 1.5
+arrow(s, x + 0.05, Y1 + H1 / 2 - 0.17, 0.3, 0.34, kind=MSO_SHAPE.RIGHT_ARROW); x += 0.4
+node(s, x, Y1, 2.1, H1, "Clean the file", "Fix dates, amounts, Y/N flags and reason spellings. Hide card numbers. Flag duplicate ids."); x += 2.1
+arrow(s, x + 0.05, Y1 + H1 / 2 - 0.17, 0.3, 0.34, kind=MSO_SHAPE.RIGHT_ARROW); x += 0.4
+RULES_X = x
+node(s, x, Y1, 2.6, H1, "Written rules decide", "An ordered list in a versioned file: 7 'send to a person' rules first, 4 'approve' rules after. First match wins. Unknown never approves.", fill=TEAL_DARK, head_color=WHITE); x += 2.6
+arrow(s, x + 0.05, Y1 + H1 / 2 - 0.17, 0.3, 0.34, kind=MSO_SHAPE.RIGHT_ARROW); x += 0.4
+node(s, x, Y1, 2.0, 0.75, "Approve", "120 of 248 (48%); rule and quote recorded.")
+node(s, x, Y1 + 0.85, 2.0, 0.75, "To a person", "128 of 248, with the reason in plain words."); x += 2.0
+arrow(s, x + 0.05, Y1 + 0.85 + 0.375 - 0.17, 0.3, 0.34, kind=MSO_SHAPE.RIGHT_ARROW); x += 0.4
+node(s, x, Y1, W - M - x, H1, "Two queues", "The reviewer queue, oldest first. The fraud queue for flagged cases.")
+arrow(s, RULES_X + 1.3 - 0.17, Y1 + H1 + 0.06, 0.34, 0.28, kind=MSO_SHAPE.UP_ARROW)
+Y2 = Y1 + H1 + 0.4
+node(s, RULES_X, Y2, 2.6, 1.3, "A model reads the note, only when a rule asks",
+     "Five yes/no questions, each with the quote it relied on. Answers are saved. No key means 'unknown', which goes to a person.")
+text(s, M, Y2, 3.8, 1.3, [
+    ("The same path on the command line and in the app.", {"size": 12, "bold": True, "color": TEAL_DARK, "gap": 4}),
+    ("refund-agent decide any.csv writes one line per request: the outcome, the rule that fired, the facts it used, the rules version. Nothing in the app is a mock.", {"size": 12, "color": MUTED}),
+])
+text(s, RULES_X + 3.0, Y2, W - M - RULES_X - 3.0, 1.3, [
+    ("Two outcomes only.", {"size": 12, "bold": True, "color": TEAL_DARK, "gap": 4}),
+    ("Approve, or send to a person. The system never rejects: a wrong rejection costs an appeal and maybe the customer. Rejecting stays with people.", {"size": 12, "color": MUTED}),
+])
+Y3 = Y2 + 1.3 + 0.25
+H3 = H - 0.5 - Y3
+PW = (W - 2 * M - 0.5) / 3
+panel(s, M, Y3, PW, H3, "The reviewer's screen", [
+    "Why the request is here, in plain words; what the model read, with the exact quote; the customer's history; the manager's note that applies.",
+    "Approve, approve part, reject, or send to the fraud team. Each goes to the log with the reviewer's name and the rules version.",
+], size=11)
+panel(s, M + PW + 0.25, Y3, PW, H3, "The manager's screen", [
+    "She types a sentence ('anything over $300 comes to us'); the model turns it into a rule, or says why it cannot.",
+    "A dry run replays old and new rules on the 248 past requests; then she publishes a new version. Rollback is one click.",
+], size=11)
+panel(s, M + 2 * (PW + 0.25), Y3, PW, H3, "The replay, as a test", [
+    "Every version is run on the 248 decided requests, where we know what happened next.",
+    "If it would approve a past bad case that a note or flag could have caught, the test fails and blocks publishing.",
+], head_color=CORAL, size=11)
+notes(s, "The flow is src/data/normalize.py -> src/policy/engine.py -> src/queue.py; the model is only called from the extractor. Screens are app/pages; the test is refund-agent backtest.")
+
+# ---------------------------------------------------------------- 4. what changes
+s = prs.slides.add_slide(BLANK)
+title(s, "What changes: today and with the system, side by side")
+table(s, M, 1.35, W - 2 * M, [
+    ["", "today", "with the system"],
+    ["who decides the money", "an old rule nobody remembers, then four reviewers", "written rules in a versioned file; first matching rule wins; people take the rest"],
+    ["approved without a person", "111 of 248 (45%), $3,377: $54 or less, no earlier refunds, account 9 months or older", "120 of 248 (48%), $5,015: safe cases up to $200, with the notes read; 100% agreed with the final human decision"],
+    ["reviewer time", "1,119 minutes over 137 requests", "963 minutes: 156 saved, and the small clean cases no longer wait"],
+    ["why a request was approved", "not recorded", "the rule that fired and the quote from the note, in the decision log"],
+    ["what the reviewer sees", "the raw request, in one queue with no order", "why it is here, what the model read, the customer's history, the policy note that applies; oldest first"],
+    ["fraud-flagged cases", "same queue; 3 approved without the fraud team, 2 charged back", "their own queue; the rules never approve a fraud flag"],
+    ["changing a rule", "find whoever set it up at IT; no way to test it first", "the manager types a sentence, sees the dry run on 248 past cases, publishes a version; rollback in one click"],
+    ["catching a bad rule", "a chargeback, weeks later", "the replay before publishing; five weekly numbers and two rollback levels after"],
+    ["rejecting a customer", "the reviewer's call", "unchanged: the system never rejects"],
+], widths=[2.35, 4.4, 5.38], size=11)
+TW = (W - 2 * M - 0.5) / 3
+stat(s, M, 5.45, TW, "+$1,638", "approved without a person on the same 248 requests: 120 instead of 111, $5,015 instead of $3,377.")
+stat(s, M + TW + 0.25, 5.45, TW, "156 minutes", "of reviewer time saved out of 1,119, and no small clean request waits behind a fraud case.")
+stat(s, M + 2 * (TW + 0.25), 5.45, TW, "0", "bad approvals a note or flag could have caught, in the replay. The one it cannot catch is a $49 case with no note.", color=CORAL)
+notes(s, "Left column from findings.md sections 2 to 6; right column from the backtest ('The line') and the two screens. Slides 5 to 7 give the detail behind each row.")
+
+# ---------------------------------------------------------------- 5. the line
 s = prs.slides.add_slide(BLANK)
 title(s, "The line: what the system decides alone, and what goes to a person")
 card(s, M, 1.35, COL, 5.6, "Goes to a person (checked first)", [
@@ -140,7 +253,7 @@ card(s, M, 1.35, COL, 5.6, "Goes to a person (checked first)", [
     "Never arrived, and late delivery: these need a human judgment call.",
     "The same request id twice with different details.",
 ])
-card(s, COL2_X, 1.35, COL, 3.35, "Approved automatically (only if nothing above applies)", [
+card(s, COL2_X, 1.35, COL, 3.35, "Approved automatically", [
     "The warehouse confirmed we sent the wrong item.",
     "Damage claim of $50 or less.",
     "Damage claim over $50 where the note says a photo shows the damage.",
@@ -152,7 +265,7 @@ card(s, COL2_X, 4.9, COL, 2.05, "Two outcomes only", [
 ])
 notes(s, "The rules live in policies/v1.json: a list of yes/no questions about the notes and an ordered list of rules. First matching rule wins.")
 
-# ---------------------------------------------------------------- 3. the evidence
+# ---------------------------------------------------------------- 6. the evidence
 s = prs.slides.add_slide(BLANK)
 title(s, "The evidence: we replayed the rules on the 248 past requests")
 text(s, M, 1.3, COL, 0.9, "Because we know what happened afterwards (chargebacks, appeals, the reviewer's decision), we can check every automatic approval the rules would have made.", size=13)
@@ -178,7 +291,7 @@ text(s, COL2_X, bottom + 0.2, COL, 2.3, [
 ])
 notes(s, "Numbers from docs/eda/findings.md, section 'The line', generated by refund-agent backtest.")
 
-# ---------------------------------------------------------------- 4. the two mechanisms
+# ---------------------------------------------------------------- 7. the two mechanisms
 s = prs.slides.add_slide(BLANK)
 title(s, "The two screens: the reviewer's queue, and the manager's rules")
 card(s, M, 1.35, COL, 5.6, "The reviewer", [
@@ -195,12 +308,12 @@ card(s, COL2_X, 1.35, COL, 5.6, "The manager", [
 ], size=12)
 notes(s, "Nothing on these screens is a mock: they call the same engine and logs as the command line.")
 
-# ---------------------------------------------------------------- 5. how we'd know it's wrong
+# ---------------------------------------------------------------- 8. how we'd know it's wrong
 s = prs.slides.add_slide(BLANK)
 title(s, "How we would know it is wrong: before switch-on, and after")
 card(s, M, 1.35, COL, 2.6, "Before: the replay is a test", [
     "If the rules would approve a past case that went bad and could have been caught, the test fails and the change cannot be published.",
-    "The model's reading of notes is checked separately on 205 notes labelled by hand (next slide).",
+    "The model's reading of notes is checked separately on 205 notes labelled by hand (slide 9).",
 ], size=12)
 card(s, M, 4.15, COL, 2.8, "Rollback, two levels", [
     "One bad case: a chargeback on something the system approved. The manager switches off the one rule that approved it. No engineer needed.",
@@ -218,7 +331,7 @@ table(s, COL2_X, 1.9, COL, [
 text(s, COL2_X, 4.3, COL, 1.5, "Honest note: 248 past requests is a small sample. The replay proves we did not repeat a known mistake; the weekly numbers are the real test.", size=12, color=MUTED)
 notes(s, "Baselines come from the replay: about $450 per week approved automatically over 11 weeks of history.")
 
-# ---------------------------------------------------------------- 6. where AI is used
+# ---------------------------------------------------------------- 9. where AI is used
 s = prs.slides.add_slide(BLANK)
 title(s, "Where the AI is used, where it is not, and why")
 card(s, M, 1.35, COL, 2.7, "Used, for two narrow jobs", [
@@ -246,7 +359,7 @@ table(s, COL2_X, 3.85, COL, [
 text(s, COL2_X, 5.9, COL, 1.0, "A wrong 'yes' could approve money, so that is the number that must be perfect. A missed 'yes' only sends the case to a person.", size=12, color=MUTED)
 notes(s, "Checked on 205 notes labelled by hand; details and every mismatch in docs/eda/extractor_eval.md.")
 
-# ---------------------------------------------------------------- 7. what was cut, next
+# ---------------------------------------------------------------- 10. what was cut, next
 s = prs.slides.add_slide(BLANK)
 title(s, "What was left out, and what comes next")
 card(s, M, 1.35, COL, 5.6, "Left out on purpose", [
@@ -263,7 +376,7 @@ card(s, COL2_X, 1.35, COL, 5.6, "Next", [
 ], size=12, head_color=CORAL)
 notes(s, "Scope was 4-6 hours; a narrow thing that runs plus a clear list of what was cut.")
 
-# ---------------------------------------------------------------- 8. appendix: the data
+# ---------------------------------------------------------------- 11. appendix: the data
 s = prs.slides.add_slide(BLANK)
 title(s, "Appendix: the data, and what was wrong with it")
 table(s, M, 1.35, COL, [
